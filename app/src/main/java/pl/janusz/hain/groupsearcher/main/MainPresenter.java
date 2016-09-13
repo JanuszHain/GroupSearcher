@@ -48,7 +48,7 @@ public class MainPresenter implements MainContract.Presenter {
         observableFindBiggestSocialGroup(inputString)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> onGroupsGeneratedAndSorted())
+                .doOnCompleted(this::onGroupsGeneratedAndSorted)
                 .subscribe(b -> {
                         },
                         throwable -> {
@@ -184,9 +184,7 @@ public class MainPresenter implements MainContract.Presenter {
                         groups.addAll(groupsToBeAdded);
                         Observable generateGroups = generateGroups();
                         generateGroups
-                                .doOnCompleted(() -> {
-                                    subscriber.onCompleted();
-                                })
+                                .doOnCompleted(subscriber::onCompleted)
                                 .subscribe();
                     })
                     .forEach(group ->
@@ -225,9 +223,7 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     private Observable generateGroups() {
-        return Observable.create(subscriber -> {
-            createMergedGroupGeneration(subscriber);
-        });
+        return Observable.create(this::createMergedGroupGeneration);
     }
 
     private void createMergedGroupGeneration(Subscriber subscriber) {
@@ -243,10 +239,10 @@ public class MainPresenter implements MainContract.Presenter {
                     }
                 })
                 .doOnCompleted(() -> {
+                    groups.addAll(groupsToBeAdded);
                     if (!groupsToBeGeneratedMore.isEmpty()) {
                         createMergedGroupGeneration(subscriber);
                     } else {
-                        groups.addAll(groupsToBeAdded);
                         sortGroups();
                         subscriber.onCompleted();
                     }
