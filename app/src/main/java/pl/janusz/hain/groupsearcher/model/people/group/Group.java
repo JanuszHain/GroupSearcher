@@ -41,21 +41,6 @@ public final class Group implements GroupInterface {
         }
     }
 
-    /*
-    @Override
-    public void generateGroup() {
-        while (!personsToBeChecked.isEmpty()) {
-            Person personBeingChecked = personsToBeChecked.remove();
-            if (personKnownToAllGroupMembers(personBeingChecked)) {
-                addPersonToGroup(personBeingChecked);
-                addMembersKnownPersonsToQueueToBeChecked(personBeingChecked);
-            } else {
-                addPersonToKnownPeopleOutsideGroup(personBeingChecked);
-            }
-        }
-    }
-    */
-
     @Override
     public void generateGroup() {
         if(!personsToBeChecked.isEmpty()) {
